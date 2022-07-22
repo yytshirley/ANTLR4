@@ -439,14 +439,124 @@ SL_COMMENT
     :   '//' .*? '\n' -> skip
     ;
 ```
-- Implementating Applications With Parse-Tree Listeners
+- Implementating Applications With Parse-Tree Listeners  
   PropertyFileListener.java: https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/PropertyFileListener.java
   ![image](https://user-images.githubusercontent.com/108787042/180385066-3379b070-afe0-465d-8ad5-94a0970ab378.png)
 
-- Implementating Applications With Vistors
+- Implementating Applications With Vistors  
   When we use the -visitor option on the command line, ANTLR generates interface PropertyFileVisitor and class PropertyFileBaseVisitor  
   https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestPropertyFileVisitor.java
   ![image](https://user-images.githubusercontent.com/108787042/180384921-fd9c533e-fda6-4813-b45c-692ef15ce8d4.png)
+ 
+ - A simple calculator with a listener 
+ ```
+ ​ 	​grammar​ Expr​;​
+​ 	s ​:​ e ​;​
+​ 	e ​:​ e op​=​MULT e    ​// MULT is '*'​
+​ 	  ​|​ e op​=​ADD e     ​// ADD is '+'​
+​ 	  ​|​ INT
+​ 	  ​;
+```
+```
+public class TestEvaluator {
+    /** Sample "calculator" (special case of collector) */
+    public static class Evaluator extends ExprBaseListener {
+        Stack<Integer> stack = new Stack<Integer>();
+        public void exitE(ExprParser.EContext ctx) {
+            if ( ctx.getChildCount()==3 ) { // operations have 3 children
+                int right = stack.pop();
+                int left = stack.pop();
+                if ( ctx.op.getType()==ExprParser.MULT ) {
+                    stack.push( left * right );
+                }
+                else {
+                    stack.push( left + right ); // must be add
+                }
+            }
+        }
+
+        public void visitTerminal(TerminalNode node) {
+            Token symbol = node.getSymbol();
+            if ( symbol.getType()==ExprParser.INT ) {
+                stack.push( Integer.valueOf(symbol.getText()) );
+            }
+        }
+    }
+```
+```
+ 	​public​ ​static​ ​class​ EContext ​extends​ ParserRuleContext {
+​ 	    ​public​ Token op;                     ​// derived from label op​
+​ 	    ​public​ List<EContext> e() { ... }    ​// get all e subtrees​
+​ 	    ​public​ EContext e(​int​ i) { ... }     ​// get ith e subtree​
+​ 	    ​public​ TerminalNode INT() { ... }    ​// get INT node if alt 3 of e​
+​ 	    ...
+​ 	}
+```
+- Sharing Information among Event Methods  
+  visitor return https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvalVisitor.java
+```
+public class TestEvalVisitor {
+    // a4 -visitor LExpr.g4
+    /** Visitor "calculator" */
+    public static class EvalVisitor extends ExprBaseVisitor<Integer> {
+        public Integer visitE(ExprParser.EContext ctx) {
+            if ( ctx.getChildCount()==3 ) { // operations have 3 children
+                if ( ctx.op.getType()==ExprParser.MULT ) {
+                    return visit(ctx.e(0)) * visit(ctx.e(1));
+                }
+                else {
+                    return visit(ctx.e(0)) + visit(ctx.e(1)); // must be add
+                }
+            }
+            return visitChildren(ctx);   // must be e above INT
+        }
+
+        @Override
+        public Integer visitTerminal(TerminalNode node) {
+            if ( node.getSymbol().getType()==ExprParser.INT ) {
+                return Integer.valueOf(node.getText());
+            }
+            return 0;
+        }
+    }
+```
+    tree properties  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvaluator.java
+    
+   
+```
+        /** Sample "calculator" using tree properties not stack */
+    public static class EvaluatorWithProps extends ExprBaseListener {
+        ParseTreeProperty<Integer> values = new ParseTreeProperty<Integer>();
+
+        @Override
+        public void exitS(ExprParser.SContext ctx) {
+            values.put(ctx, values.get(ctx.getChild(0)));
+        }
+
+        public void exitE(ExprParser.EContext ctx) {
+            if ( ctx.getChildCount()==3 ) { // operations have 3 children
+                int left = values.get(ctx.e(0));
+                int right = values.get(ctx.e(1));
+                if ( ctx.op.getType()==ExprParser.MULT ) {
+                    values.put(ctx, left * right);
+                }
+                else {
+                    values.put(ctx, left + right);
+                }
+            }
+            else {
+                values.put(ctx, values.get(ctx.getChild(0))); // an INT
+            }
+        }
+
+        public void visitTerminal(TerminalNode node) {
+            Token symbol = node.getSymbol();
+            if ( symbol.getType()==ExprParser.INT ) {
+                values.put(node, Integer.valueOf(symbol.getText()));
+            }
+        }
+    }
+```
 
 
 
