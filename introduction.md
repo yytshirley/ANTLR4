@@ -49,26 +49,65 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
 ​ 	​...​
 ​ 	ID ​:​ ​[​a​-​zA​-​Z​]+​ ​;​ ​// does NOT match 'enum' or 'for'
 ```
+Token Category	Description and Examples
+Punctuation
 
-  ```
-  ​ 	FLOAT​:​  DIGIT​+​ ​'.'​ DIGIT​*​  ​// match 1. 39. 3.14159 etc...​
-​ 	    ​|​          ​'.'​ DIGIT​+​  ​// match .1 .14159​
+The easiest way to handle operators and punctuation is to directly reference them in parser rules.
+```
+​ 	call ​:​ ID ​'('​ exprList ​')'​ ​;​
+```
+Some programmers prefer to define token labels such as LP (left parenthesis) instead.
+```
+​ 	call ​:​ ID LP exprList RP ​;​
+​ 	LP ​:​ ​'('​ ​;​
+​ 	RP ​:​ ​')'​ ​;​
+```
+Keywords
+
+Keywords are reserved identifiers, and we can either reference them directly or define token types for them.
+```
+​ 	returnStat ​:​ ​'return'​ expr ​';'​
+```
+Identifiers
+
+Identifiers look almost the same in every language, with some variation about what the first character can be and whether Unicode characters are allowed.
+```
+​ 	ID ​:​ ID_LETTER ​(​ID_LETTER ​|​ DIGIT​)*​ ​;​ ​// From C language​
+​ 	​fragment​ ID_LETTER ​:​ ​'a'​​..​​'z'​​|​​'A'​​..​​'Z'​​|​​'_'​ ​;​
+​ 	​fragment​ DIGIT ​:​ ​'0'​​..​​'9'​ ​;​
+```
+Numbers
+
+These are definitions for integers and simple floating-point numbers.
+```
+​ 	INT ​:​ DIGIT​+​ ​;​
+​ 	FLOAT
+​ 	    ​:​ DIGIT​+​ ​'.'​ DIGIT​*​
+​ 	    ​|​ ​'.'​ DIGIT​+​
 ​ 	    ​;​
-​ 	​fragment​
-​ 	DIGIT   ​:​   ​[​0​-​9​]​ ​;​        ​// match single digit
+```
+Strings
 
-  ```
-  ```
-   	STRING​:​ ​'"'​ ​(​ESC​|.)*?​ ​'"'​ ​;​
-​ 	​fragment​
-​ 	ESC ​:​ ​'\\"'​ ​|​ ​'\\\\'​ ​;​ ​// 2-char sequences \" and \\
-  ```
+Match double-quoted strings.
+```
+​ 	STRING ​:​  ​'"'​ ​(​ ESC ​|​ ​.​ ​)*?​ ​'"'​ ​;​
+​ 	​fragment​ ESC ​:​ ​'\\'​ ​[​btnr​"\\]​ ​;​ ​// \b, \t, \n etc...​
+```
+Comments
   ```
   ​ 	assign ​:​ ID ​(​WS​|​COMMENT​)?​ ​'='​ ​(​WS​|​COMMENT​)?​ expr ​(​WS​|​COMMENT​)?​ ​;
-  	LINE_COMMENT ​:​ ​'//'​ ​.*?​ ​'\r'​​?​ ​'\n'​ ​->​ skip ​;​ ​// Match "//" stuff '\n'​
-​ 	COMMENT      ​:​ ​'/*'​ ​.*?​ ​'*/'​       ​->​ skip ​;​ ​// Match "/*" stuff "*/"
   ```
+Match and discard comments.
+```
+​ 	LINE_COMMENT ​:​ ​'//'​ ​.*?​ ​'\n'​ ​->​ skip ​;​
+​ 	COMMENT      ​:​ ​'/*'​ ​.*?​ ​'*/'​ ​->​ skip ​;​
+```
+Whitespace
 
+Match whitespace in the lexer and throw it out.
+```
+​ 	WS ​:​ ​[​ ​\​t​\​n​\​r​]+​ ​->​ skip ​;
+```
 **Parser：** A parser checks sentences for membership in a specific language by checking the sentence’s structure against the rules of a grammar. The best analogy for parsing is traversing a maze, comparing words of a sentence to words written along the floor to go from entrance to exit. ANTLR generates top-down parsers called ALL(*) that can use all remaining input symbols to make decisions. Top-down parsers are goal-oriented and start matching at the rule associated with the coarsest construct, such as program or inputFile.
 
 **Recursive-descent parser：** This is a specific kind of top-down parser implemented with a function for each rule in the grammar.
@@ -202,6 +241,60 @@ methodDeclaration
 
 - Embedding Arbitrary Actions in a Grammar
 - Island Grammars: Dealing with Different Formats in the Same File
+- Drawing the line between lexer and parser
+  > 192.168.209.85 "GET /download/foo.html HTTP/1.0" 200
+    1. Count how many lines there are in the file. The lexer doesn’t have to recognize much in the way of structure, and the parser matches a sequence of newline tokens.
+    2. Collect a list of IP addresses from the log file. This means we need a rule to recognize the lexical structure of an IP address, and we might as well provide lexer rules for the other record elements.
+
+```
+ 	file  ​:​ NL​+​ ​;​              ​// parser rule matching newline (NL) sequence​
+​ 	STUFF ​:​ ​~​​'\n'​​+​ ​->​ skip ​;​   ​// match and discard anything but a '\n'​
+​ 	NL    ​:​ ​'\n'​ ​;​             ​// return NL to parser or other invoking code
+
+ 	IP    ​:​ INT ​'.'​ INT ​'.'​ INT ​'.'​ INT ​;​ ​// 192.168.209.85​
+​ 	INT   ​:​ ​[​0​-​9​]+​ ​;​        ​// match IP octet or HTTP result code​
+​ 	STRING​:​ ​'"'​ ​.*?​ ​'"'​ ​;​   ​// matches the HTTP protocol command​
+​ 	NL    ​:​ ​'\n'​ ​;​          ​// match log file record terminator​
+​ 	WS    ​:​ ​' '​ ​->​ skip ​;​   ​// ignore spaces
+``` 
+```
+​ 	file  ​:​ row​+​ ​;​                ​// parser rule matching rows of log file​
+​ 	row   ​:​ ip STRING INT NL ​;​    ​// match log file record​
+​ 	ip    ​:​ INT ​'.'​ INT ​'.'​ INT ​'.'​ INT ​;​ ​// match IPs in parser​
+​ 	
+​ 	INT   ​:​ ​[​0​-​9​]+​ ​;​        ​// match IP octet or HTTP result code​
+​ 	STRING​:​ ​'"'​ ​.*?​ ​'"'​ ​;​   ​// matches the HTTP protocol command​
+​ 	NL    ​:​ ​'\n'​ ​;​          ​// match log file record terminator​
+​ 	WS    ​:​ ​' '​ ​->​ skip ​;​   ​// ignore spaces
+```
+
+
+- Parse CSV
+```
+​ 	Details,Month,Amount
+​ 	Mid Bonus,June,"$2,000"
+​ 	,January,"""zippo"""
+​ 	Total Bonuses,"","$5,000"
+```
+  ```
+  grammar CSV;
+
+file : hdr row+ ;
+hdr : row ;
+
+row : field (',' field)* '\r'? '\n' ;
+
+field
+    :   TEXT
+    |   STRING
+    |
+    ;
+
+TEXT : ~[,\n\r"]+ ;
+STRING : '"' ('""'|~'"')* '"' ; // quote-quote is an escaped quote
+```
+
+
 
 
 
