@@ -15,7 +15,20 @@ A language is a set of valid sentences; sentences are composed of phrases, which
 
 **Grammar：**
 A grammar formally defines the syntax rules of a language. Each rule in a grammar expresses the structure of a subphrase.
+- Designning Grammers
 
+  1. ANTLR Core Notation: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
+  2. Common computer lanaguage patterns: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
+  3. Precedence
+  > ANTLR resolves ambiguities in favor of the alternative given first, implicitly allowing us to specify operator precedence. ANTLR associates operators
+  > left to right as we’d expect for * and +. Some operators like exponentiation group right to left, though, so we have to manually specify the associativity on the     > operator token using option assoc.
+  > ANTLR lexers resolve ambiguities between lexical rules by favoring the rule specified first
+  
+  ```
+  	expr ​:​ expr ​'^'​​<​assoc​=​right​>​ expr ​// ^ operator is right associative
+	     ​|​ INT
+ 	     ​;
+  ```
 **Syntax tree or parse tree：** This represents the structure of the sentence where each subtree root gives an abstract name to the elements beneath it. The subtree roots correspond to grammar rule names. The leaves of the tree are symbols or tokens of the sentence.
 
 ![image](https://user-images.githubusercontent.com/108787042/180364329-57cbdd7f-0eaa-470b-a815-73ba6490d7e1.png)  
@@ -23,6 +36,38 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
 **Token：** A token is a vocabulary symbol in a language; these can represent a category of symbols such as “identifier” or can represent a single operator or keyword.
 
 **Lexer or tokenizer：** This breaks up an input character stream into tokens and passes them to a parser that checks the syntax. A lexer performs lexical analysis.
+- Lexer
+  1. Precedence
+  > ANTLR lexers resolve ambiguities between lexical rules by favoring the rule specified first. 
+  2. By prefixing the rule with fragment, we let ANTLR know that the rule will be used only by other lexical rules.
+  3. The dot wildcard operator matches any single character. Therefore, .* would be a loop that matches any sequence of zero or more characters.The loop in STRING now matches either an escape character sequence, by calling fragment rule ESC, or any single character via the dot wildcard. The *? subrule operator terminates the (ESC|.)*? loop upon seeing what follows, an unescaped double-quote character.
+```
+	​grammar​ KeywordTest​;​
+​ 	enumDef ​:​ ​'enum'​ ​'{'​ ​...​ ​'}'​ ​;​
+​ 	​...​
+​ 	FOR ​:​ ​'for'​ ​;​
+​ 	​...​
+​ 	ID ​:​ ​[​a​-​zA​-​Z​]+​ ​;​ ​// does NOT match 'enum' or 'for'
+```
+
+  ```
+  ​ 	FLOAT​:​  DIGIT​+​ ​'.'​ DIGIT​*​  ​// match 1. 39. 3.14159 etc...​
+​ 	    ​|​          ​'.'​ DIGIT​+​  ​// match .1 .14159​
+​ 	    ​;​
+​ 	​fragment​
+​ 	DIGIT   ​:​   ​[​0​-​9​]​ ​;​        ​// match single digit
+
+  ```
+  ```
+   	STRING​:​ ​'"'​ ​(​ESC​|.)*?​ ​'"'​ ​;​
+​ 	​fragment​
+​ 	ESC ​:​ ​'\\"'​ ​|​ ​'\\\\'​ ​;​ ​// 2-char sequences \" and \\
+  ```
+  ```
+  ​ 	assign ​:​ ID ​(​WS​|​COMMENT​)?​ ​'='​ ​(​WS​|​COMMENT​)?​ expr ​(​WS​|​COMMENT​)?​ ​;
+  	LINE_COMMENT ​:​ ​'//'​ ​.*?​ ​'\r'​​?​ ​'\n'​ ​->​ skip ​;​ ​// Match "//" stuff '\n'​
+​ 	COMMENT      ​:​ ​'/*'​ ​.*?​ ​'*/'​       ​->​ skip ​;​ ​// Match "/*" stuff "*/"
+  ```
 
 **Parser：** A parser checks sentences for membership in a specific language by checking the sentence’s structure against the rules of a grammar. The best analogy for parsing is traversing a maze, comparing words of a sentence to words written along the floor to go from entrance to exit. ANTLR generates top-down parsers called ALL(*) that can use all remaining input symbols to make decisions. Top-down parsers are goal-oriented and start matching at the rule associated with the coarsest construct, such as program or inputFile.
 
@@ -157,18 +202,6 @@ methodDeclaration
 
 - Embedding Arbitrary Actions in a Grammar
 - Island Grammars: Dealing with Different Formats in the Same File
-- Designning Grammers
 
-  1. ANTLR Core Notation: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
-  2. Common computer lanaguage patterns: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
-  3. Precedence
-  > ANTLR resolves ambiguities in favor of the alternative given first, implicitly allowing us to specify operator precedence. ANTLR associates operators
-  > left to right as we’d expect for * and +. Some operators like exponentiation group right to left, though, so we have to manually specify the associativity on the     > operator token using option assoc.
-  
-  ```
-  	expr ​:​ expr ​'^'​​<​assoc​=​right​>​ expr ​// ^ operator is right associative
-	     ​|​ INT
- 	     ​;
-  ```
 
 
