@@ -294,6 +294,153 @@ TEXT : ~[,\n\r"]+ ;
 STRING : '"' ('""'|~'"')* '"' ; // quote-quote is an escaped quote
 ```
 
+- Parse Json
+
+```
+​ 	{
+​ 	        "antlr.org": {
+​ 	                "owners" : [],
+​ 	                "live" : ​true​,
+​ 	                "speed" : 1​e​100,
+​ 	                "menus" : [​"File"​, ​"Help\nMenu"​]
+​ 	        }
+​ 	}
+```
+
+```
+// Derived from http://json.org
+
+grammar JSON;
+
+json:   object
+    |   array
+    ;
+
+object
+    :   '{' pair (',' pair)* '}'
+    |   '{' '}' // empty object
+    ;
+pair:   STRING ':' value ;
+
+array
+    :   '[' value (',' value)* ']'
+    |   '[' ']' // empty array
+    ;
+
+value
+    :   STRING
+    |   NUMBER
+    |   object  // recursion
+    |   array   // recursion
+    |   'true'  // keywords
+    |   'false'
+    |   'null'
+    ;
+
+STRING :  '"' (ESC | ~["\\])* '"' ;
+
+fragment ESC :   '\\' (["\\/bfnrt] | UNICODE) ;
+fragment UNICODE : 'u' HEX HEX HEX HEX ;
+fragment HEX : [0-9a-fA-F] ;
+
+NUMBER
+    :   '-'? INT '.' INT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
+    |   '-'? INT EXP            // 1e10 -3e4
+    |   '-'? INT                // -3, 45
+    ;
+fragment INT :   '0' | [1-9] [0-9]* ; // no leading zeros
+fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
+
+WS  :   [ \t\n\r]+ -> skip ;
+```
+
+-Parse  Cymbol
+
+```
+​ 	// Cymbol test
+​ 	int g = 9;        // a global variable
+​ 	int fact(int x) { // factorial function
+​ 	    if x==0 then return 1;
+​ 	    return x * fact(x-1);
+​ 	}
+```
+
+```
+/** Simple statically-typed programming language with functions and variables
+ *  taken from "Language Implementation Patterns" book.
+ */
+grammar Cymbol;
+
+file:   (functionDecl | varDecl)+ ;
+
+varDecl
+    :   type ID ('=' expr)? ';'
+    ;
+type:   'float' | 'int' | 'void' ; // user-defined types
+
+functionDecl
+    :   type ID '(' formalParameters? ')' block // "void f(int x) {...}"
+    ;
+formalParameters
+    :   formalParameter (',' formalParameter)*
+    ;
+formalParameter
+    :   type ID
+    ;
+
+block:  '{' stat* '}' ;   // possibly empty statement block
+stat:   block
+    |   varDecl
+    |   'if' expr 'then' stat ('else' stat)?
+    |   'return' expr? ';' 
+    |   expr '=' expr ';' // assignment
+    |   expr ';'          // func call
+    ;
+
+/* expr below becomes the following non-left recursive rule:
+expr[int _p]
+    :   ( '-' expr[6]
+        | '!' expr[5]
+        | ID
+        | INT
+        | '(' expr ')'
+        )
+        ( {8 >= $_p}? '*' expr[9]
+        | {7 >= $_p}? ('+'|'-') expr[8]
+        | {4 >= $_p}? '==' expr[5]
+        | {10 >= $_p}? '[' expr ']'
+        | {9 >= $_p}? '(' exprList? ')'
+        )*
+    ;
+*/
+
+expr:   ID '(' exprList? ')'    // func call like f(), f(x), f(1,2)
+    |   expr '[' expr ']'       // array index like a[i], a[i][j]
+    |   '-' expr                // unary minus
+    |   '!' expr                // boolean not
+    |   expr '*' expr
+    |   expr ('+'|'-') expr
+    |   expr '==' expr          // equality comparison (lowest priority op)
+    |   ID                      // variable reference
+    |   INT
+    |   '(' expr ')'
+    ;
+exprList : expr (',' expr)* ;   // arg list
+
+ID  :   LETTER (LETTER | [0-9])* ;
+fragment
+LETTER : [a-zA-Z] ;
+
+INT :   [0-9]+ ;
+
+WS  :   [ \t\n\r]+ -> skip ;
+
+SL_COMMENT
+    :   '//' .*? '\n' -> skip
+    ;
+```
+
+
 
 
 
