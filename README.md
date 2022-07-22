@@ -24,12 +24,11 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
   > ANTLR resolves ambiguities in favor of the alternative given first, implicitly allowing us to specify operator precedence. ANTLR associates operators
   > left to right as we’d expect for * and +. Some operators like exponentiation group right to left, though, so we have to manually specify the associativity on the     > operator token using option assoc.
   > ANTLR lexers resolve ambiguities between lexical rules by favoring the rule specified first
-  
-  ```
+```
   	expr ​:​ expr ​'^'​​<​assoc​=​right​>​ expr ​// ^ operator is right associative
 	     ​|​ INT
  	     ​;
-  ```
+```
 **Syntax tree or parse tree：** This represents the structure of the sentence where each subtree root gives an abstract name to the elements beneath it. The subtree roots correspond to grammar rule names. The leaves of the tree are symbols or tokens of the sentence.
 
 ![image](https://user-images.githubusercontent.com/108787042/180364329-57cbdd7f-0eaa-470b-a815-73ba6490d7e1.png)  
@@ -38,10 +37,8 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
 
 **Lexer or tokenizer：** This breaks up an input character stream into tokens and passes them to a parser that checks the syntax. A lexer performs lexical analysis.
 - Lexer
-  1. Precedence
+ 1. Precedence
   > ANTLR lexers resolve ambiguities between lexical rules by favoring the rule specified first. 
-  2. By prefixing the rule with fragment, we let ANTLR know that the rule will be used only by other lexical rules.
-  3. The dot wildcard operator matches any single character. Therefore, .* would be a loop that matches any sequence of zero or more characters.The loop in STRING now matches either an escape character sequence, by calling fragment rule ESC, or any single character via the dot wildcard. The *? subrule operator terminates the (ESC|.)*? loop upon seeing what follows, an unescaped double-quote character.
 ```
 	​grammar​ KeywordTest​;​
 ​ 	enumDef ​:​ ​'enum'​ ​'{'​ ​...​ ​'}'​ ​;​
@@ -50,36 +47,36 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
 ​ 	​...​
 ​ 	ID ​:​ ​[​a​-​zA​-​Z​]+​ ​;​ ​// does NOT match 'enum' or 'for'
 ```
-Token Category	Description and Examples
-Punctuation
 
-The easiest way to handle operators and punctuation is to directly reference them in parser rules.
+  2. By prefixing the rule with fragment, we let ANTLR know that the rule will be used only by other lexical rules.
+  
+```
+​ 	STRING ​:​  ​'"'​ ​(​ ESC ​|​ ​.​ ​)*?​ ​'"'​ ​;​
+​ 	​fragment​ ESC ​:​ ​'\\'​ ​[​btnr​"\\]​ ​;​ ​// \b, \t, \n etc...​
+```
+  3. The dot wildcard operator matches any single character. Therefore, .* would be a loop that matches any sequence of zero or more characters.The loop in STRING now matches either an escape character sequence, by calling fragment rule ESC, or any single character via the dot wildcard. The *? subrule operator terminates the (ESC|.)*? loop upon seeing what follows, an unescaped double-quote character.
+
+ - Token Category	Description and Examples  
+  1. Punctuation  Easiest way to handle operators and punctuation is to directly reference them in parser rules.Some programmers prefer to define token labels such as LP (left parenthesis) instead.
 ```
 ​ 	call ​:​ ID ​'('​ exprList ​')'​ ​;​
 ```
-Some programmers prefer to define token labels such as LP (left parenthesis) instead.
 ```
 ​ 	call ​:​ ID LP exprList RP ​;​
 ​ 	LP ​:​ ​'('​ ​;​
 ​ 	RP ​:​ ​')'​ ​;​
 ```
-Keywords
-
-Keywords are reserved identifiers, and we can either reference them directly or define token types for them.
+  2. Keywords  Keywords are reserved identifiers, and we can either reference them directly or define token types for them.
 ```
 ​ 	returnStat ​:​ ​'return'​ expr ​';'​
 ```
-Identifiers
-
-Identifiers look almost the same in every language, with some variation about what the first character can be and whether Unicode characters are allowed.
+  3. Identifiers  Identifiers look almost the same in every language, with some variation about what the first character can be and whether Unicode characters are allowed.
 ```
 ​ 	ID ​:​ ID_LETTER ​(​ID_LETTER ​|​ DIGIT​)*​ ​;​ ​// From C language​
 ​ 	​fragment​ ID_LETTER ​:​ ​'a'​​..​​'z'​​|​​'A'​​..​​'Z'​​|​​'_'​ ​;​
 ​ 	​fragment​ DIGIT ​:​ ​'0'​​..​​'9'​ ​;​
 ```
-Numbers
-
-These are definitions for integers and simple floating-point numbers.
+  4. Numbers  These are definitions for integers and simple floating-point numbers.
 ```
 ​ 	INT ​:​ DIGIT​+​ ​;​
 ​ 	FLOAT
@@ -87,25 +84,20 @@ These are definitions for integers and simple floating-point numbers.
 ​ 	    ​|​ ​'.'​ DIGIT​+​
 ​ 	    ​;​
 ```
-Strings
-
-Match double-quoted strings.
+  5. Strings  Match double-quoted strings.
 ```
 ​ 	STRING ​:​  ​'"'​ ​(​ ESC ​|​ ​.​ ​)*?​ ​'"'​ ​;​
 ​ 	​fragment​ ESC ​:​ ​'\\'​ ​[​btnr​"\\]​ ​;​ ​// \b, \t, \n etc...​
 ```
-Comments
+  6. Comments  Match and discard comments.
   ```
   ​ 	assign ​:​ ID ​(​WS​|​COMMENT​)?​ ​'='​ ​(​WS​|​COMMENT​)?​ expr ​(​WS​|​COMMENT​)?​ ​;
   ```
-Match and discard comments.
 ```
 ​ 	LINE_COMMENT ​:​ ​'//'​ ​.*?​ ​'\n'​ ​->​ skip ​;​
 ​ 	COMMENT      ​:​ ​'/*'​ ​.*?​ ​'*/'​ ​->​ skip ​;​
 ```
-Whitespace
-
-Match whitespace in the lexer and throw it out.
+  7. Whitespace Match whitespace in the lexer and throw it out.
 ```
 ​ 	WS ​:​ ​[​ ​\​t​\​n​\​r​]+​ ​->​ skip ​;
 ```
