@@ -114,7 +114,7 @@ Match whitespace in the lexer and throw it out.
 
 **Lookahead：** Parsers use lookahead to make decisions by comparing the symbols that begin each alternative.
 
-**Parse-tree Listeners：** PANTLR generates a parse-tree listener interface that responds to events triggered by the built-in tree walker. The listeners themselves are exactly like SAX document handler objects for XML parsers. SAX listeners receive notification of events like startDocument and endDocument. 
+**Parse-tree Listeners：** PANTLR generates a parse-tree listener interface that responds to events triggered by the built-in tree walker. The listeners themselves are exactly like SAX document handler objects for XML parsers. SAX listeners receive notification of events like startDocument and endDocument. Listener event methods also can’t use method return values to pass data around. When we need to control the walk or want to return values with event-method return values, 
 
 ![image](https://user-images.githubusercontent.com/108787042/180364907-b2d6a5d9-cf6d-4732-af72-560e953700ff.png)
 
@@ -439,8 +439,14 @@ SL_COMMENT
     :   '//' .*? '\n' -> skip
     ;
 ```
+- Implementating Applications With Parse-Tree Listeners
+  PropertyFileListener.java: https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/PropertyFileListener.java
+  ![image](https://user-images.githubusercontent.com/108787042/180385066-3379b070-afe0-465d-8ad5-94a0970ab378.png)
 
-
+- Implementating Applications With Vistors
+  When we use the -visitor option on the command line, ANTLR generates interface PropertyFileVisitor and class PropertyFileBaseVisitor  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestPropertyFileVisitor.java
+  ![image](https://user-images.githubusercontent.com/108787042/180384921-fd9c533e-fda6-4813-b45c-692ef15ce8d4.png)
 
 
 
