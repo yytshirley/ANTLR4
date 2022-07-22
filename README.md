@@ -347,7 +347,7 @@ fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
 WS  :   [ \t\n\r]+ -> skip ;
 ```
 
--Parse  Cymbol
+- Parse  Cymbol
 
 ```
 ​ 	// Cymbol test
@@ -441,7 +441,10 @@ SL_COMMENT
   https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestPropertyFileVisitor.java
   ![image](https://user-images.githubusercontent.com/108787042/180384921-fd9c533e-fda6-4813-b45c-692ef15ce8d4.png)
  
- - A simple calculator with a listener 
+
+- Sharing Information among Event Methods  
+
+   A simple calculator with a listener or a visitor
  ```
  ​ 	​grammar​ Expr​;​
 ​ 	s ​:​ e ​;​
@@ -450,7 +453,18 @@ SL_COMMENT
 ​ 	  ​|​ INT
 ​ 	  ​;
 ```
+
 ```
+​ 	e ​:​ e MULT e            ​#​ Mult
+​ 	  ​|​ e ADD e             ​#​ Add
+​ 	  ​|​ INT                 ​#​ Int
+​ 	  ​;
+```
+
+  1. Simulating Return Values with a Stack  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvaluator.java
+
+```
+//without precise events methods
 public class TestEvaluator {
     /** Sample "calculator" (special case of collector) */
     public static class Evaluator extends ExprBaseListener {
@@ -477,6 +491,30 @@ public class TestEvaluator {
     }
 ```
 ```
+///with precise events methods
+public class TestLEvaluator {
+    /** Sample "calculator" */
+    public static class Evaluator extends LExprBaseListener {
+        Stack<Integer> stack = new Stack<Integer>();
+
+        public void exitMult(LExprParser.MultContext ctx) {
+            int right = stack.pop();
+            int left = stack.pop();
+            stack.push( left * right );
+        }
+
+        public void exitAdd(LExprParser.AddContext ctx) {
+            int right = stack.pop();
+            int left = stack.pop();
+            stack.push(left + right);
+        }
+
+        public void exitInt(LExprParser.IntContext ctx) {
+            stack.push( Integer.valueOf(ctx.INT().getText()) );
+        }
+    }
+```
+```
  	​public​ ​static​ ​class​ EContext ​extends​ ParserRuleContext {
 ​ 	    ​public​ Token op;                     ​// derived from label op​
 ​ 	    ​public​ List<EContext> e() { ... }    ​// get all e subtrees​
@@ -485,8 +523,18 @@ public class TestEvaluator {
 ​ 	    ...
 ​ 	}
 ```
-- Sharing Information among Event Methods  
-  visitor return https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvalVisitor.java
+
+  2. Traversing Parse Trees with Visitors  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvalVisitor.java
+     with precise event methods version https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestLEvalVisitor.java
+
+ ```
+ ​ 	​grammar​ Expr​;​
+​ 	s ​:​ e ​;​
+​ 	e ​:​ e op​=​MULT e    ​// MULT is '*'​
+​ 	  ​|​ e op​=​ADD e     ​// ADD is '+'​
+​ 	  ​|​ INT
+​ 	  ​;
+```
 ```
 public class TestEvalVisitor {
     // a4 -visitor LExpr.g4
@@ -513,8 +561,18 @@ public class TestEvalVisitor {
         }
     }
 ```
-    tree properties  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvaluator.java
+
+  3. Annotating Parse Trees properties  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestEvaluator.java
+     with precise event methods version https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/TestLEvaluator.java
     
+ ```
+ ​ 	​grammar​ Expr​;​
+​ 	s ​:​ e ​;​
+​ 	e ​:​ e op​=​MULT e    ​// MULT is '*'​
+​ 	  ​|​ e op​=​ADD e     ​// ADD is '+'​
+​ 	  ​|​ INT
+​ 	  ​;
+```
    
 ```
         /** Sample "calculator" using tree properties not stack */
@@ -550,6 +608,8 @@ public class TestEvalVisitor {
         }
     }
 ```
+
+- 
 
 
 
