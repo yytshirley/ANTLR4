@@ -45,8 +45,8 @@ A grammar formally defines the syntax rules of a language. Each rule in a gramma
 
 ### Book Examples
 - Matching an Arithmetic Expression Language tour/Expr.g4   
-1. Rules/parser lowercase letter, Tokens/lexer Uppercase letter
-2. handle left-recursive rules
+  1. Rules/parser lowercase letter, Tokens/lexer Uppercase letter
+  2. handle left-recursive rules
 ```
 ​  tour/t.expr 
 ​ 	193
@@ -79,9 +79,9 @@ ID  :   [a-zA-Z]+ ;      // match identifiers <label id="code.tour.expr.3"/>
 INT :   [0-9]+ ;         // match integers
 NEWLINE:'\r'? '\n' ;     // return newlines to parser (is end-statement signal)
 WS  :   [ \t]+ -> skip ; // toss out whitespace
-```
-Split a grammar into parser and lexer grammars and factor out lexical rules into a “module”.
-```
+  ```
+  Split a grammar into parser and lexer grammars and factor out lexical rules into a “module”.
+  ```
 lexer grammar CommonLexerRules; // note "lexer grammar"
 
 ID  :   [a-zA-Z]+ ;      // match identifiers
@@ -91,7 +91,8 @@ WS  :   [ \t]+ -> skip ; // toss out whitespace
 ```
 
 - Building a Cacular Using a Visitor
-1. label the alternatives of the rules
+  1. label the alternatives of the rules
+  
 ```
 grammar LabeledExpr; // rename to distinguish from Expr.g4
 
@@ -118,7 +119,7 @@ INT :   [0-9]+ ;         // match integers
 NEWLINE:'\r'? '\n' ;     // return newlines to parser (is end-statement signal)
 WS  :   [ \t]+ -> skip ; // toss out whitespace
 ```
-tour/EvalVisitor.java: https://github.com/yytshirley/Grammars/blob/master/book-examples/tour/EvalVisitor.java#L58
+  tour/EvalVisitor.java: https://github.com/yytshirley/Grammars/blob/master/book-examples/tour/EvalVisitor.java#L58
 
 - Building a  Translator with a Listener
 
