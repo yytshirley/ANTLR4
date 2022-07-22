@@ -132,10 +132,42 @@ tour/EvalVisitor.java: https://github.com/yytshirley/Grammars/blob/master/book-e
 ​ 	}
 ```
 ```
+classDeclaration
+    :   'class' Identifier typeParameters? ('extends' type)?
+        ('implements' typeList)?
+        classBody
+    ;
+```
+```
 ​ 	​interface​ IDemo {
 ​ 	        ​void​ f(​int​ x, String y);
 ​ 	        ​int​[ ] g(​/*no args*/​);
 ​ 	        List<Map<String, Integer>>[] h();
 ​ 	}
 ```
+```
+methodDeclaration
+    :   type Identifier formalParameters ('[' ']')* methodDeclarationRest
+    |   'void' Identifier formalParameters methodDeclarationRest
+    ;
+```
+  
+  tour/ExtractInterfaceListener.java: https://github.com/yytshirley/Grammars/blob/master/book-examples/tour/ExtractInterfaceListener.java
+
+- Embedding Arbitrary Actions in a Grammar
+- Island Grammars: Dealing with Different Formats in the Same File
+- Designning Grammers
+
+  1. ANTLR Core Notation: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
+  2. Common computer lanaguage patterns: https://learning.oreilly.com/library/view/the-definitive-antlr/9781941222621/f_0036.xhtml#sec.common-lex-structures
+  3. Precedence
+  > ANTLR resolves ambiguities in favor of the alternative given first, implicitly allowing us to specify operator precedence. ANTLR associates operators
+  > left to right as we’d expect for * and +. Some operators like exponentiation group right to left, though, so we have to manually specify the associativity on the     > operator token using option assoc.
+  
+  ```
+  	expr ​:​ expr ​'^'​​<​assoc​=​right​>​ expr ​// ^ operator is right associative
+	     ​|​ INT
+ 	     ​;
+  ```
+
 
