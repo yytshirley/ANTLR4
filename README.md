@@ -623,9 +623,56 @@ public class TestEvalVisitor {
 ​ 	 {Details=Total Bonuses, Month="", Amount="$5,000"}]
 ```
 
-  2. Translating Json to XML
+  2. Translating Json to XML https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/JSON2XML.java
+  ```
+  ​ 	{
+​ 	    ​"description"​ ​:​ ​"An imaginary server config file"​,
+​ 	    ​"logs"​ ​:​ {​"level"​​:​​"verbose"​, ​"dir"​​:​​"/var/log"​},
+​ 	    ​"host"​ ​:​ ​"antlr.org"​,
+​ 	    ​"admin"​​:​ [​"parrt"​, ​"tombu"​],
+​ 	    ​"aliases"​​:​ []
+​ 	}
+```
+
+```
+<description>An imaginary server config file</description>
+​ 	<logs>
+​ 	    <level>verbose</level>
+​ 	    <dir>/var/log</dir>
+​ 	</logs>
+​ 	<host>antlr.org</host>
+​ 	<admin>
+​ 	    <element>parrt</element>
+​ 	    <element>tombu</element>
+​ 	</admin>
+​ 	<aliases></aliases>
+```
   
   3. Validating program symbol usage
+  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Symbol.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/CheckSymbol.java  
+  ```
+​​①​	​int​ x; 
+​ 	​int​ y;
+​​②​	​void​ a() 
+​​③​	{ 
+​ 	    ​int​ x;
+​ 	    x = 1;  ​// x resolves to current scope, not x in global scope​
+​ 	    y = 2;  ​// y is not found in current scope, but resolves in global​
+​​④​	    { ​int​ y = x; } 
+​ 	}
+​​⑤​	​void​ b(​int​ z) 
+​​⑥​	{ } 
+```
+
+![image](https://user-images.githubusercontent.com/108787042/180629218-5efb725f-e29b-4b09-9e88-c292804a7537.png)
+
+
+
 
 
 
