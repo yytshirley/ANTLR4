@@ -649,12 +649,12 @@ public class TestEvalVisitor {
 ```
   
   3. Validating program symbol usage
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Symbol.java  
+  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/CheckSymbol.java  
   
-    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
-    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
-    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
-    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Symbol.java  
-    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/CheckSymbol.java  
 ```
 ​​①​	​int​ x; 
 ​ 	​int​ y;
