@@ -610,8 +610,8 @@ public class TestEvalVisitor {
 ```
 
 - Building Real language examples
-  1. Loading CSV data  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/LoadCSV.java
-  ```
+ 1. Loading CSV data  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/LoadCSV.java
+```
   ​ 	Details,Month,Amount
 ​ 	Mid Bonus,June,"$2,000"
 ​ 	,January,"""zippo"""
@@ -624,7 +624,7 @@ public class TestEvalVisitor {
 ```
 
   2. Translating Json to XML https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/JSON2XML.java
-  ```
+```
   ​ 	{
 ​ 	    ​"description"​ ​:​ ​"An imaginary server config file"​,
 ​ 	    ​"logs"​ ​:​ {​"level"​​:​​"verbose"​, ​"dir"​​:​​"/var/log"​},
@@ -650,12 +650,12 @@ public class TestEvalVisitor {
   
   3. Validating program symbol usage
   
-  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
-  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
-  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
-  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Symbol.java  
-  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/CheckSymbol.java  
-  ```
+    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
+    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
+    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
+    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Symbol.java  
+    https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/CheckSymbol.java  
+```
 ​​①​	​int​ x; 
 ​ 	​int​ y;
 ​​②​	​void​ a() 
