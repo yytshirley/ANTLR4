@@ -648,7 +648,7 @@ public class TestEvalVisitor {
 ​ 	<aliases></aliases>
 ```
   
-  3. Validating program symbol usage
+  3. Validating program symbol usage  
   https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/RefPhase.java  
   https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/DefPhase.java  
   https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/Scope.java  
