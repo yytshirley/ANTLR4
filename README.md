@@ -609,7 +609,23 @@ public class TestEvalVisitor {
     }
 ```
 
-- 
+- Building Real language examples
+  1. Loading CSV data  https://github.com/yytshirley/Grammars/blob/master/book-examples/listeners/LoadCSV.java
+  ```
+  ​ 	Details,Month,Amount
+​ 	Mid Bonus,June,"$2,000"
+​ 	,January,"""zippo"""
+​ 	Total Bonuses,"","$5,000"
+```
+```
+	[{Details=Mid Bonus, Month=June, Amount="$2,000"},
+​ 	 {Details=, Month=January, Amount="""zippo"""},
+​ 	 {Details=Total Bonuses, Month="", Amount="$5,000"}]
+```
+
+  2. Translating Json to XML
+  
+  3. Validating program symbol usage
 
 
 
