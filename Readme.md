@@ -10,7 +10,7 @@ The core function of the original C VfrCompiler tool is to convert the vfr file 
 - Generate a yaml file for each vfr file. The yaml file displays all the contents in the Vfr file by different Opcode types in sequence.
 - Generate a json file for each vfr file. The json file contains all the default values for different Opcode types in vfr files.
 
-### Known issues:
+### Known issues
 
 - The python VfrCompiler tool aims to cover the same usage as the edk2 C VfrCompiler. But currently, the python VfrCompiler tool does not support IFR binary generation feature, this feature will be added in future update.
 - The VfrCompiler python tool will extend new functions, which is able to compile both the vfr and yaml files. This feature will be added in future update.
