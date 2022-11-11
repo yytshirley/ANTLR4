@@ -13,7 +13,7 @@ The core function of the original C VfrCompiler tool is to convert the vfr file 
 ### Known issues
 
 - The python VfrCompiler tool aims to cover the same usage as the edk2 C VfrCompiler. But currently, the python VfrCompiler tool does not support IFR binary generation feature, this feature will be added in future update.
-- The VfrCompiler python tool will extend new functions, which is able to compile both the vfr and yaml files. This feature will be added in future update.
+- The python VfrCompiler tool will extend new functions, which is able to compile both the vfr and yaml files. This feature will be added in future update.
 
 ### Use with Build System
 - To use the VfrCompiler Python Tool with Build System,  please add the ***'--vfr-yaml-enable'***  option in the build command.
