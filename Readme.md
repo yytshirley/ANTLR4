@@ -1,8 +1,8 @@
 # Python VfrCompiler Tool
 ## Overview
-This python VfrCompiler tool is the implementation of the edk2 VfrCompiler tool which locates at https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/VfrCompile.
+This python VfrCompiler tool is the python implementation of the edk2 VfrCompiler tool which C implementation locates at https://github.com/tianocore/edk2/tree/master/BaseTools/Source/C/VfrCompile.
 
-This implementation not only covers the same usage as the edk2 C VfrCompiler, but also extends several new features.
+This python implementation not only covers the same usage as the C version VfrCompiler, but also extends several new features.
 
 ### Introduction
 The core function of the original C VfrCompiler tool is to convert VFR files into IFR binaries. However, the VFR format syntax is uncommon and has poor readability for users. Additionally, the C tool doesn't gather or store default variable information, except for binary generation. When modifications are required, developers have to deal with the abstract IFR binary, resulting in inefficiency. To address these challenges, the python tool generates YAML format files from VFR files. This approach allows for preservation of the VFR file's opcode layout and hierarchy, simplifying readability. Moreover, the tool generates an additional JSON file to provide a more accessible presentation of variable-related information. In a few words, the new tool offers the same usage as the original C VfrCompiler while expanding functionality with the YAML/JSON output, enhancing readability and adaptability.
