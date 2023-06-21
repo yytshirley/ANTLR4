@@ -34,6 +34,6 @@ The core function of the original C VfrCompiler tool is to convert VFR files int
     @set PYTHONPATH=%PYTHONPATH%;%BASE_TOOLS_PATH%\Source\Python;%BASE_TOOLS_PATH%\Source\Python\VfrCompiler
     @%PYTHON_COMMAND% -m %ToolName% %*
     ```
-4. Add Env: run `pip install CppHeader` based on the original buid environment.
+4. Add Env: run `pip install CppHeader` based on the original build environment.
 5. Run Build Command: `build -p OvmfPkg\OvmfPkgIa32X64.dsc -a IA32 -a X64 -j build.log`
 `
