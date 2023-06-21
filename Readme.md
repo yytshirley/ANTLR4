@@ -5,7 +5,7 @@ This python VfrCompiler tool is the implementation of the edk2 VfrCompiler tool 
 This implementation not only covers the same usage as the edk2 C VfrCompiler, but also extends several new features.
 
 ### Introduction
-The core function of the original C VfrCompiler tool is to convert VFR files into IFR binaries. However, the VFR format syntax is uncommon and has poor readability for users. Additionally, the C tool doesn't gather or store default variable information, except for binary generation. When modifications are required, developers have to deal with the abstract IFR binary, resulting in inefficiency. To address these challenges, the python tool generates YAML format files from VFR files. This approach allows for preservation of the VFR file's opcode layout and hierarchy within the YAML file, simplifying readability. Moreover, the tool creates an additional JSON file to provide a more accessible presentation of variable-related information. In a few words, The new tool offers the same usage as the original C VfrCompiler while expanding functionality with the YAML/JSON output, enhancing readability and adaptability.
+The core function of the original C VfrCompiler tool is to convert VFR files into IFR binaries. However, the VFR format syntax is uncommon and has poor readability for users. Additionally, the C tool doesn't gather or store default variable information, except for binary generation. When modifications are required, developers have to deal with the abstract IFR binary, resulting in inefficiency. To address these challenges, the python tool generates YAML format files from VFR files. This approach allows for preservation of the VFR file's opcode layout and hierarchy within the YAML file, simplifying readability. Moreover, the tool creates an additional JSON file to provide a more accessible presentation of variable-related information. In a few words, the new tool offers the same usage as the original C VfrCompiler while expanding functionality with the YAML/JSON output, enhancing readability and adaptability.
 
 ### Main update in this commitment
 - Update the vfr parser generator from ANTLR to ANTLR v4, which is more readable and is eaiser to add on new grammars and functions.
@@ -15,8 +15,8 @@ The core function of the original C VfrCompiler tool is to convert VFR files int
 
 ### Known issues
 
-- The python VfrCompiler tool aims to cover the same usage as the edk2 C VfrCompiler. But currently, the python VfrCompiler tool does not support IFR binary generation feature, this feature will be added in future update.
-- The python VfrCompiler tool will extend new functions, which is able to compile both the vfr and yaml files. This feature will be added in future update.
+- The current YAML format is a reference version, and we warmly welcome everyone to provide feedback.
+- The tool will extend new functions, which is able to compile yaml files. This feature will be added in future update.
 
 ### Use with Build System
 - To use the VfrCompiler Python Tool with Build System,  please do the following steps in the build command.
