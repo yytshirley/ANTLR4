@@ -3,7 +3,7 @@
 ## OverView
 The feature is the implementation of unit test for the python vfrcompiler tool.
 ## Introduction
-We choose ten VFR files from the following modules in the edkrepo as test cases.
+We choose ten VFR files from the following modules in the edk2 as test cases.
 - IScsiDxe
 - VlanConfigDxe
 - Platform
