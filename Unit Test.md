@@ -38,13 +38,14 @@ If you want to add more test cases to do further validation, please do the follo
 
 ## Run test
 To apply the unit test feature, please do the following steps.
-1. Add Env: run `pip install pytest` based on the original build environment.
-2. run `cd edk2\BaseTools\Source\Python\tests`
-3. open **edk2\BaseTools\Source\Python\tests\pytest.ini** and Modify the parameters that need to be used
+1. Refer to **edk2\BaseTools\Source\Python\VfrCompiler\README.md** and run build command.
+2. Add Env: run `pip install pytest` based on the original build environment.
+3. run `cd edk2\BaseTools\Source\Python\tests`
+4. open **edk2\BaseTools\Source\Python\tests\pytest.ini** and Modify the parameters that need to be used
 ```
 python_files =
     test_Vfrcompiler.py
 This parameter selects the test file.
 ```
 
-4. run command `pytest` in edk2\BaseTools\Source\Python\tests
+5. run command `pytest` in edk2\BaseTools\Source\Python\tests
