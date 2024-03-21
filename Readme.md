@@ -64,7 +64,7 @@ To apply the VfrCompiler python tool with Build System,  the code modifies the f
     exec "${python_exe:-python}" -m IfrCompiler "$@"
     ```
   
-### Usage Section
+### How to use
 1. Add Env: run `pip install antlr4-python3-runtime==4.7.1` based on the original build environment.
 2. Run Build Command: `build -p OvmfPkg\OvmfPkgIa32X64.dsc -a IA32 -a X64 -j build.log` to have a try.
 
